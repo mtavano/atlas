@@ -26,6 +26,8 @@ func main() {
 
 		switch s {
 		case gatt.StatePoweredOn:
+			d.AddService(service.NewGapService("Atlas"))
+
 			auth := service.NewAuthService()
 			d.AddService(auth)
 
