@@ -28,7 +28,7 @@ func main() {
 		case gatt.StatePoweredOn:
 			d.AddService(service.NewGapService("Atlas"))
 
-			auth := atlas.service.NewAuthService()
+			auth := service.NewAuthService()
 			d.AddService(auth)
 
 			d.AdvertiseNameAndServices("Atlas", []gatt.UUID{auth.UUID()})
