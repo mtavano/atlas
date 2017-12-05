@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
+	"github.com/mtavano/atlas/postgres"
 	"github.com/mtavano/atlas/service"
 	"github.com/paypal/gatt"
 )
@@ -10,6 +12,19 @@ import (
 // TODO: review why it compiles with gatt/examples/option and noth with atlas/option
 
 func main() {
+	host := "gate-dev.cfjgzmj532wd.us-east-1.rds.amazonaws.com"
+	port := 5432
+	user := "gate"
+	password := "Gate12345"
+	dbname := "gate_api"
+
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+
+	db, err := postgres.NewDatastore(psqlInfo)
+	keyStore := &postgres.KeyStore{Datastore: db}
+
 	defaultServerOptions := []gatt.Option{}
 	dvc, err := gatt.NewDevice(defaultServerOptions...)
 	check(err)
@@ -28,7 +43,7 @@ func main() {
 		case gatt.StatePoweredOn:
 			d.AddService(service.NewGapService("Atlas"))
 
-			auth := service.NewAuthService()
+			auth := service.NewAuthService(keyStore)
 			d.AddService(auth)
 
 			d.AdvertiseNameAndServices("Atlas", []gatt.UUID{auth.UUID()})
