@@ -41,12 +41,16 @@ func main() {
 
 		switch s {
 		case gatt.StatePoweredOn:
-			d.AddService(service.NewGapService("Atlas"))
+			d.AddService(service.NewGapService("Puerta 1"))
+			svc := gatt.NewService(gatt.MustParseUUID("2000000F-3ED1-488D-B6E8-6A27D888E256"))
 
-			auth := service.NewAuthService(keyStore)
+			auth := service.NewAuthService(keyStore, svc)
 			d.AddService(auth)
 
-			d.AdvertiseNameAndServices("Atlas", []gatt.UUID{auth.UUID()})
+			//notify := service.NewStatusKeyService(svc)
+			//d.AddService(notify)
+
+			d.AdvertiseNameAndServices("Puerta 1", []gatt.UUID{auth.UUID()})
 
 		default:
 		}
